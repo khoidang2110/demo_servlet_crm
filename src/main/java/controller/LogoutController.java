@@ -25,10 +25,16 @@ public class LogoutController extends HttpServlet {
 					// Thêm cookie mới vào response
 					resp.addCookie(cookie);
 
-					break; // Không cần tiếp tục vòng lặp vì đã xử lý xong cookie "role"
+					// break; // Không cần tiếp tục vòng lặp vì đã xử lý xong cookie "role"
+				} else {
+					cookie.setValue("");
+					cookie.setMaxAge(0);
+					resp.addCookie(cookie);
 				}
 			}
 		}
-		resp.sendRedirect("login.jsp"); // Điều hướng về trang login
+		// resp.sendRedirect("login.jsp"); // Điều hướng về trang login
+		resp.sendRedirect(req.getContextPath() + "/login");
+
 	}
 }

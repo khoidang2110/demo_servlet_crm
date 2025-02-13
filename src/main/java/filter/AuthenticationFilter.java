@@ -40,42 +40,48 @@ public class AuthenticationFilter implements Filter {
 		String path = req.getServletPath();
 		// System.out.println(path);
 		String context = req.getContextPath();
-		switch (path) {
-		case "/role":
-			if (roleName.equals("ROLE_ADMIN")) {
+		if (roleName == null) {
+			resp.sendRedirect(req.getContextPath() + "/index.html"); // Chuyển hướng nếu không có cookie "role"
+		} else {
+			switch (path) {
+			case "/role":
+				if (roleName.equals("ROLE_ADMIN")) {
 
-				chain.doFilter(req, resp);
-			} else {
+					chain.doFilter(req, resp);
+				} else {
+					resp.sendRedirect(context + "/index.html");
+				}
+				break;
+			case "/user":
+				if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER")) {
+
+					chain.doFilter(req, resp);
+				} else {
+					resp.sendRedirect(context + "/index.html");
+				}
+				// chain.doFilter(req, resp);
+				break;
+
+			case "/job":
+				if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER")) {
+					System.out.println(" filter job");
+					chain.doFilter(req, resp);
+				} else {
+					resp.sendRedirect(context + "/index.html");
+				}
+				break;
+			case "/task":
+				if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_USER")) {
+					chain.doFilter(req, resp);
+				} else {
+					resp.sendRedirect(context + "/index.html");
+				}
+				break;
+
+			default:
+				System.out.println(" filter chua dang nhap");
 				resp.sendRedirect(context + "/index.html");
 			}
-			break;
-		case "/user":
-			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER")) {
-
-				chain.doFilter(req, resp);
-			} else {
-				resp.sendRedirect(context + "/index.html");
-			}
-			// chain.doFilter(req, resp);
-			break;
-
-		case "/job":
-			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER")) {
-				chain.doFilter(req, resp);
-			} else {
-				resp.sendRedirect(context + "/index.html");
-			}
-			break;
-		case "/task":
-			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_USER")) {
-				chain.doFilter(req, resp);
-			} else {
-				resp.sendRedirect(context + "/index.html");
-			}
-			break;
-
-		default:
-
 		}
 		System.out.println("Kiemtra filter");
 		// cho phép đi tiếp, ko có dòng này là chặn

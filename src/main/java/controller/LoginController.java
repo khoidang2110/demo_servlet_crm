@@ -27,6 +27,14 @@ public class LoginController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//		String path = req.getServletPath();
+//
+//		switch (path) {
+//		case "/login":
+//			System.out.println("login ");
+//			req.getRequestDispatcher("login.jsp").forward(req, resp);
+//			break;
+//		}
 
 		Cookie[] cookies = req.getCookies();
 		String email = "";
@@ -36,6 +44,7 @@ public class LoginController extends HttpServlet {
 		req.setAttribute("password", password);
 
 		req.getRequestDispatcher("login.jsp").forward(req, resp);
+		// resp.sendRedirect("login.jsp");
 	}
 
 	@Override

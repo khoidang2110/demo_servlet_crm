@@ -36,7 +36,7 @@ public class TaskController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		System.out.println("Servlet /task is being accessed");
 		String path = req.getServletPath();
 		switch (path) {
 		case "/task":
