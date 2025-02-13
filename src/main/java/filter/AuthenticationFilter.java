@@ -41,17 +41,6 @@ public class AuthenticationFilter implements Filter {
 		// System.out.println(path);
 		String context = req.getContextPath();
 		switch (path) {
-
-		case "/user":
-			if (roleName.equals("ROLE_ADMIN")) {
-
-				chain.doFilter(req, resp);
-			}
-//			else {
-//				resp.sendRedirect(context + "/index.html");
-//			}
-			// chain.doFilter(req, resp);
-			break;
 		case "/role":
 			if (roleName.equals("ROLE_ADMIN")) {
 
@@ -60,14 +49,28 @@ public class AuthenticationFilter implements Filter {
 				resp.sendRedirect(context + "/index.html");
 			}
 			break;
-		case "/job":
-			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER") || roleName.equals("ROLE_USER")) {
+		case "/user":
+			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER")) {
+
 				chain.doFilter(req, resp);
+			} else {
+				resp.sendRedirect(context + "/index.html");
+			}
+			// chain.doFilter(req, resp);
+			break;
+
+		case "/job":
+			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER")) {
+				chain.doFilter(req, resp);
+			} else {
+				resp.sendRedirect(context + "/index.html");
 			}
 			break;
 		case "/task":
-			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_MANAGER") || roleName.equals("ROLE_USER")) {
+			if (roleName.equals("ROLE_ADMIN") || roleName.equals("ROLE_USER")) {
 				chain.doFilter(req, resp);
+			} else {
+				resp.sendRedirect(context + "/index.html");
 			}
 			break;
 
