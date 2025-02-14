@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 
 import config.MysqlConfig;
 import entity.JobEntity;
@@ -189,15 +190,36 @@ public class TaskController extends HttpServlet {
 		List<TaskEntity> listTask = new ArrayList<>();
 		// Fixed SQL query by adding the missing comma between j.start_date and
 		// j.end_date
+		String userId = null;
+		Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("user_id")) {
+					userId = cookie.getValue();
+					break;
+				}
+			}
+		}
+
+		// Nếu không tìm thấy user_id trong cookie, trả về một thông báo hoặc xử lý lỗi.
+		if (userId == null) {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID not found in cookies");
+			return;
+		}
+
 		String query = "SELECT t.id, t.name AS task_name, t.start_date, t.end_date, "
 				+ "u.fullname AS user_name, j.name AS job_name, s.name AS status_name " + "FROM tasks t "
 				+ "JOIN users u ON u.id = t.user_id " + "JOIN jobs j ON j.id = t.job_id "
-				+ "JOIN status s ON s.id = t.status_id";
+				+ "JOIN status s ON s.id = t.status_id "
+				+ "WHERE t.user_id = ?";
 
 		// B2: open database connection
 		Connection connection = MysqlConfig.getConnection();
 		try {
 			PreparedStatement statement = connection.prepareStatement(query);
+
+			statement.setString(1, userId);
+
 			ResultSet result = statement.executeQuery();
 
 			// Loop through each row of the result and add JobEntity to the list
@@ -233,6 +255,7 @@ public class TaskController extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+
 
 		// Set the job list as an attribute and forward to the JSP
 		req.setAttribute("listTask", listTask);

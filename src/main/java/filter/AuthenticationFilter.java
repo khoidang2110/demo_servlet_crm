@@ -2,11 +2,7 @@ package filter;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 // các đường dẫn sẽ kích hoạt filter 
 @WebFilter(filterName = "authenFilter", urlPatterns = { "/user", "/role", "/job", "/task" })
 public class AuthenticationFilter implements Filter {
-
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		// Khởi tạo filter nếu cần
+		// Bạn có thể truy cập filterConfig để lấy các cấu hình, ví dụ: filterConfig.getInitParameter("someParameter")
+		System.out.println("AuthenticationFilter initialized");
+	}
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -87,5 +88,8 @@ public class AuthenticationFilter implements Filter {
 		// cho phép đi tiếp, ko có dòng này là chặn
 		// chain.doFilter(req, resp);
 	}
-
+	@Override
+	public void destroy() {
+		// Dọn dẹp tài nguyên, nếu cần (ví dụ: đóng kết nối, giải phóng tài nguyên)
+	}
 }

@@ -18,19 +18,23 @@ public class LogoutController extends HttpServlet {
 		Cookie[] cookies = req.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
+
+				cookie.setValue("");
+				cookie.setMaxAge(0);
+				resp.addCookie(cookie);
 				// Kiểm tra cookie có tên là "role"
-				if (cookie.getName().equals("role")) {
-					cookie.setValue("logout");
-
-					// Thêm cookie mới vào response
-					resp.addCookie(cookie);
-
-					// break; // Không cần tiếp tục vòng lặp vì đã xử lý xong cookie "role"
-				} else {
-					cookie.setValue("");
-					cookie.setMaxAge(0);
-					resp.addCookie(cookie);
-				}
+//				if (cookie.getName().equals("role")) {
+//					cookie.setValue("logout");
+//
+//					// Thêm cookie mới vào response
+//					resp.addCookie(cookie);
+//
+//					// break; // Không cần tiếp tục vòng lặp vì đã xử lý xong cookie "role"
+//				} else {
+//					cookie.setValue("");
+//					cookie.setMaxAge(0);
+//					resp.addCookie(cookie);
+//				}
 			}
 		}
 		// resp.sendRedirect("login.jsp"); // Điều hướng về trang login

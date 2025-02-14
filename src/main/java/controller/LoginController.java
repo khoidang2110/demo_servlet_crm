@@ -60,7 +60,7 @@ public class LoginController extends HttpServlet {
 		System.out.println("Password mã hóa MD5: " + passwordEncoded);
 
 		// Câu lệnh truy vấn tìm user
-		String query = "SELECT r.name, u.email FROM users u " + "JOIN roles r ON u.role_id = r.id "
+		String query = "SELECT r.name, u.id, u.email FROM users u " + "JOIN roles r ON u.role_id = r.id "
 				+ "WHERE u.email = ? AND u.password = ?";
 
 		UserEntity loggedInUser = null;
@@ -74,23 +74,11 @@ public class LoginController extends HttpServlet {
 			// System.out.println("Thực thi truy vấn: " + query);
 			ResultSet result = statement.executeQuery();
 
-			// Nếu tìm thấy user thì lấy dữ liệu
-//			while (result.next()) {
-//
-//				UserEntity entity = new UserEntity();
-//				entity.setEmail(result.getString("email"));
-//
-//				RoleEntity roleEntity = new RoleEntity();
-//				roleEntity.setName(result.getString("name"));
-//				System.out.println(roleEntity);
-//				entity.setRole(roleEntity);
-//
-//				listUser.add(entity);
-//
-//			}
+
 			if (result.next()) {
 				loggedInUser = new UserEntity();
 				loggedInUser.setEmail(result.getString("email"));
+				loggedInUser.setId(result.getInt("id"));
 
 				RoleEntity roleEntity = new RoleEntity();
 				roleEntity.setName(result.getString("name"));
@@ -102,24 +90,8 @@ public class LoginController extends HttpServlet {
 			System.out.println("Lỗi SQL:");
 			e.printStackTrace();
 		}
-//		if (listUser.size() > 0) {
-//			if (remember != null) {
-//				Cookie ckEmail = new Cookie("email", email);
-//				Cookie ckPassword = new Cookie("password", password);
-//
-//				resp.addCookie(ckEmail);
-//				resp.addCookie(ckPassword);
-//			}
-//
-//			Cookie ckRole = new Cookie("role", listUser.get(0).getRole().getName());
-//			resp.addCookie(ckRole);
-//
-//			String contextPath = req.getContextPath();
-//
-//			// resp.sendRedirect(contextPath);
-//			req.getRequestDispatcher("index.html").forward(req, resp);
-//
-//		} 
+
+
 		if (loggedInUser != null) {
 			// Lưu thông tin người dùng vào cookies nếu chọn "remember me"
 			if (remember != null) {
@@ -132,6 +104,9 @@ public class LoginController extends HttpServlet {
 			// Lưu thông tin role vào cookie
 			Cookie ckRole = new Cookie("role", loggedInUser.getRole().getName());
 			resp.addCookie(ckRole);
+			//System.out.println("id of user" + loggedInUser. toString());
+			Cookie ckUserId = new Cookie("user_id", String.valueOf(loggedInUser.getId()));
+			resp.addCookie(ckUserId);
 
 			// Chuyển hướng đến trang chính
 			req.getRequestDispatcher("index.html").forward(req, resp);
